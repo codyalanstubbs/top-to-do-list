@@ -1,2 +1,2 @@
-# top-to-do-list
-A todo list app for The Odin Project
+# The Odin Project - To Do List
+A to-do list app for managing to-dos for multiple projects 
