@@ -1,13 +1,42 @@
 import './style.css';
+import {format} from 'date-fns';
 
-function component() {
-    const element = document.createElement('div');
+(() => {
 
-    // Lodash, currently included via a script, is required for this line to work
-    element.innerHTML = _.join(['Hello', 'webpack'], ' ');
-    element.classList.add('hello');
+    const createProjectInput = () => {
+        const projectNameInput = document.createElement('input');
+        projectNameInput.type = "text";
+        projectNameInput.name = "projectName";
+        projectNameInput.classList = "projectName";
 
-    return element;
-}
+        const addProjectBtn = document.createElement('button');
+        addProjectBtn.classList = "addProject";
+        addProjectBtn.textContent = "Add Project";
 
-document.body.appendChild(component());
+        addProjectBtn.addEventListener('click', (e) => {
+            //projects.push(projectNameInput.value);
+            const projectNameInput = document.querySelector('.projectName');
+            const newProject = projectFactory(projectNameInput.value, []);
+            projects.push(newProject);
+            console.log([projects]);
+        });
+        
+        document.body.appendChild(projectNameInput);
+        document.body.appendChild(addProjectBtn);
+    }
+
+    createProjectInput();
+
+    const projects = [];
+
+    const toDoFactory = (title, dueDate, priority, description, notes) => {
+        return { title, dueDate, priority, description, notes };
+    };
+    
+    const projectFactory = (name, items) => {
+        return { name, items };
+    };
+    
+    
+
+})()
