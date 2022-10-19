@@ -55,18 +55,18 @@ import {
     }
 
     const buildMetaSubDiv = (projectIndex, numberTasks) => {
-        
-        let numberOfTasks;
-        if (numberTasks === 0) {
-            numberOfTasks = createAddTasksBtn(projectIndex);
-        } else {
-            numberOfTasks = createNumberOfTasks(projectIndex, numberTasks);
-        }
+        const numberOfTasks = createNumberOfTasks(projectIndex, numberTasks);
 
         const projectMetaSubDiv = createProjectMetaSubDiv(projectIndex);
         const projectDoor = createProjectDoor(projectIndex);
+        const addTasksBtn = createAddTasksBtn(projectIndex);
+        const editTitleBtn = createEditTitleBtn(projectIndex);
+        const deleteProjectBtn = createDeleteProjectBtn(projectIndex);
 
         projectMetaSubDiv.appendChild(numberOfTasks);
+        projectMetaSubDiv.appendChild(addTasksBtn);
+        projectMetaSubDiv.appendChild(editTitleBtn);
+        projectMetaSubDiv.appendChild(deleteProjectBtn);
         projectMetaSubDiv.appendChild(projectDoor);
 
         return projectMetaSubDiv;
@@ -109,7 +109,12 @@ import {
         const numberOfTasks = document.createElement("div");
         numberOfTasks.setAttribute("id", projectIndex);
         numberOfTasks.classList = "numberOfTasks";
-        numberOfTasks.textContent = numberTasks + " tasks";
+        
+        if (numberTasks === 0 || numberTasks === 1) {
+            numberOfTasks.textContent = "1 task";
+        } else {
+            numberOfTasks.textContent = numberTasks + " tasks";
+        }
 
         return numberOfTasks;
     } 
@@ -117,10 +122,28 @@ import {
     const createAddTasksBtn = (projectIndex) => {
         const addTasksBtn = document.createElement("div");
         addTasksBtn.setAttribute("id", projectIndex);
-        addTasksBtn.classList = "edit";
-        addTasksBtn.textContent = "Add Tasks";
+        addTasksBtn.classList = "addTask";
+        addTasksBtn.textContent = "Add Task";
 
         return addTasksBtn;
+    }
+
+    const createEditTitleBtn = (projectIndex) => {
+        const editTitleBtn = document.createElement("div");
+        editTitleBtn.setAttribute("id", projectIndex);
+        editTitleBtn.classList = "editTitle";
+        editTitleBtn.textContent = "Edit Title";
+
+        return editTitleBtn;
+    }
+
+    const createDeleteProjectBtn = (projectIndex) => {
+        const editTitleBtn = document.createElement("div");
+        editTitleBtn.setAttribute("id", projectIndex);
+        editTitleBtn.classList = "deleteProject";
+        editTitleBtn.textContent = "Delete Project";
+
+        return editTitleBtn;
     }
 
     const createProjectDoor = (projectIndex) => {

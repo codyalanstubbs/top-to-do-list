@@ -39,7 +39,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 25%;
+    width: 55%;
 }
 
 .project:first-of-type > .projectMeta {
@@ -79,11 +79,21 @@ body {
 
 .complete,
 .edit,
-.submit {
+.submit,
+.deleteProject,
+.editTitle,
+.addTask {
     margin: 5px 0;
     padding: 2px;
     border: 0.5px solid black;
     border-radius: 2px;
+}
+
+.deleteProject,
+.editTitle,
+.addTask {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .complete {
