@@ -19,9 +19,17 @@ import {
         } else {
             const newProject = projectFactory(projectNameInput.value, []);
             const projectIndex = projects.push(newProject) - 1;
+            console.log(projectIndex);
             const numberOfItems = projects[projectIndex].items.length
-            const projectDiv = buildProjectDiv(projectIndex, numberOfItems, projectNameInput.value);
+
             const projectsDiv = document.querySelector('.projects');
+            const projectDiv = buildProjectDiv(projectIndex, numberOfItems, projectNameInput.value);
+
+            const toDoItemDiv = buildToDoItemDiv(projectIndex);
+            const toDoItemsDiv = buildToDoItemsDiv(projectIndex, toDoItemDiv);
+
+            projectDiv.appendChild(toDoItemsDiv)
+
             projectsDiv.insertBefore(projectDiv, projectsDiv.firstChild);
         }
     }
@@ -124,17 +132,162 @@ import {
         return projectDoor;
     } 
 
-    const createProjectInput = () => {
+    const createNotesInput = (projectIndex) => {
+        const notes = document.createElement("input");
+        notes.setAttribute("id", projectIndex);
+        notes.classList = "notes";
+        notes.placeholder = "Enter any additional notes here";
+
+        return notes;
+    }
+
+    const createDescriptionInput = (projectIndex) => {
+        const description = document.createElement("input");
+        description.setAttribute("id", projectIndex);
+        description.classList = "description";
+        description.placeholder = "Enter a description here";
+        
+        return description;
+    }
+
+    const createTitleInput = (projectIndex) => {
+        const title = document.createElement("input");
+        title.setAttribute("id", projectIndex);
+        title.classList = "title";
+        title.placeholder = "Enter the task's title here";
+
+        return title;
+    }
+
+    const buildToDoItemsDiv = (projectIndex, toDoItemDiv) => {
+        const toDoItemsDiv = createToDoItemsDiv(projectIndex);
+
+        toDoItemsDiv.appendChild(toDoItemDiv);
+
+        return toDoItemsDiv;
+    }
+
+    const buildToDoItemDiv = (projectIndex) => {
+        const titleInput = createTitleInput(projectIndex);
+        const completeDataDiv = buildCompleteDataDiv(projectIndex);
+        const descriptionInput = createDescriptionInput(projectIndex);
+        const notesInput = createNotesInput(projectIndex);
+    
+        const toDoItemDiv = createToDoItemDiv(projectIndex);
+        
+        toDoItemDiv.appendChild(titleInput);
+        toDoItemDiv.appendChild(completeDataDiv);
+        toDoItemDiv.appendChild(descriptionInput);
+        toDoItemDiv.appendChild(notesInput);
+
+        return toDoItemDiv;
+    }
+
+    const buildCompleteDataDiv = (projectIndex) => {
+        const completeDataDiv = createCompleteDataDiv(projectIndex);
+        const dueDateInput = createDueDateInput(projectIndex);
+        const taskDoor = createTaskDoor(projectIndex);
+        const completeDiv = createCompleteDiv(projectIndex);
+        const editDiv = createSubmitTaskDiv(projectIndex)
+
+        completeDataDiv.appendChild(dueDateInput);
+        completeDataDiv.appendChild(taskDoor);
+        completeDataDiv.appendChild(completeDiv);
+        completeDataDiv.appendChild(editDiv);
+
+        return completeDataDiv;
+    }
+
+    const createCompleteDataDiv = (projectIndex) => {
+        const completeDataDiv = document.createElement("div");
+        completeDataDiv.setAttribute("id", projectIndex);
+        completeDataDiv.classList = "completeData";
+
+        return completeDataDiv;
+    }
+
+    const createDueDateInput = (projectIndex) => {
+        const dueDateLabel = document.createElement("label");
+        dueDateLabel.setAttribute("for", "dueDate");
+        dueDateLabel.textContent = "Due Date: "
+
+        const dueDateInput = document.createElement("input");
+        dueDateInput.type = "date";
+        dueDateInput.setAttribute("id", projectIndex);
+        dueDateInput.setAttribute("name", projectIndex);
+        dueDateInput.classList = "dueDate";
+
+        dueDateLabel.appendChild(dueDateInput);
+
+        return dueDateLabel;
+    }
+
+    const createTaskDoor = (projectIndex) => {
+        const taskDoor = document.createElement("div");
+        taskDoor.setAttribute("id", projectIndex);
+        taskDoor.classList = "taskDoor opened";
+        taskDoor.textContent = "▼";
+
+        return taskDoor;
+    } 
+
+    const createCompleteDiv = (projectIndex) => {
+        const completeDiv = document.createElement("div");
+        completeDiv.setAttribute("id", projectIndex);
+        completeDiv.textContent = "Not Complete";
+        completeDiv.classList = "not complete";
+
+        return completeDiv;
+    }
+
+    const createSubmitTaskDiv = (projectIndex) => {
+        const submitTaskDiv = document.createElement("div");
+        submitTaskDiv.setAttribute("id", projectIndex);
+        submitTaskDiv.classList = "edit submit";
+        submitTaskDiv.textContent = "Sumbit Task";
+
+
+        return submitTaskDiv;
+    }
+
+    const createToDoItemDiv = (projectIndex) => {
+        const toDoItemDiv = document.createElement("div");
+        toDoItemDiv.setAttribute("id", projectIndex);
+        toDoItemDiv.classList = "toDoItem";
+
+        return toDoItemDiv;
+    }
+
+    const createToDoItemsDiv = (projectIndex) => {
+        const toDoItemsDiv = document.createElement("div");
+        toDoItemsDiv.setAttribute("id", projectIndex);
+        toDoItemsDiv.classList = "toDoItems";
+
+        return toDoItemsDiv;
+    }
+
+    const buildProjectNameInput = () => {
         const projectsDiv = document.querySelector('.projects');
+        const projectDiv = createProjectDiv();
+        const projectNameInput = createProjectNameInput();
+        const addProjectBtn = createProjectInputBtn();
+        
 
-        const projectDiv = document.createElement('div');
-        projectDiv.classList = "project";
+        projectDiv.appendChild(projectNameInput);
+        document.body.appendChild(addProjectBtn);
+        projectsDiv.appendChild(projectDiv);
+    }
 
+    const createProjectNameInput = () => {
         const projectNameInput = document.createElement('input');
         projectNameInput.type = "text";
         projectNameInput.classList = "projectMeta newProject newProjectName";
         projectNameInput.placeholder = 'Enter a new project name here and press "Enter"';
 
+        return projectNameInput;
+    }
+
+    const createProjectInputBtn = () => {
         const addProjectBtn = document.createElement('button');
         addProjectBtn.textContent = "Add Project";
 
@@ -143,12 +296,10 @@ import {
             addProject();
         });
 
-        projectDiv.appendChild(projectNameInput);
-        document.body.appendChild(addProjectBtn);
-        projectsDiv.appendChild(projectDiv);
+        return addProjectBtn;
     }
 
-    createProjectInput();
+    buildProjectNameInput();
 
     const projects = [];
 

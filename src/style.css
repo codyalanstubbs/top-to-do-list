@@ -78,8 +78,10 @@ body {
 }
 
 .complete,
-.edit {
+.edit,
+.submit {
     margin: 5px 0;
+    padding: 2px;
     border: 0.5px solid black;
     border-radius: 2px;
 }
@@ -94,6 +96,11 @@ body {
 
 .edit {
     background-color: orange;
+}
+
+.submit {
+    color: lightgrey;
+    background-color: green;
 }
 
 .title {
@@ -157,4 +164,9 @@ body {
 
 .opened:hover {
     background-color: black;
+}
+
+input {
+    border: 0;
+    background-color: rgba(128, 128, 128, 0.25);
 }
