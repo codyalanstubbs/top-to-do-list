@@ -12,6 +12,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 90%;
 }
 
 .project {
@@ -51,6 +52,10 @@ body {
     border-radius:  0 0 10px 10px ;
     padding: 0;
     text-align: center;
+}
+
+.projects > .project:only-child  > .projectMeta {
+    border-radius:  10px 10px 10px 10px;
 }
 
 .toDoItems {
