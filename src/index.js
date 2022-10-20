@@ -11,20 +11,23 @@ import {
         document.body.appendChild(projectsDiv);
     }
 
+    let projects = [];
     createProjectsDiv();
-    const addProject = () => {
+    const addProject = (projects) => {
         const projectNameInput = document.querySelector('.newProjectName');
         if (projectNameInput.value == '' || projectNameInput.value == undefined) {
             // Do nothing
         } else {
             const newProject = projectFactory(projectNameInput.value, []);
-            const projectIndex = projects.push(newProject) - 1;
-            console.log(projectIndex);
+            projects.push(newProject);
+
+            const projectIndex = projects.length - 1;
+            
             const numberOfItems = projects[projectIndex].items.length
 
             const projectsDiv = document.querySelector('.projects');
             const projectDiv = buildProjectDiv(projectIndex, numberOfItems, projectNameInput.value);
-            console.log("Number items: ", numberOfItems);
+
             const toDoItemDiv = buildToDoItemDiv(projectIndex, numberOfItems);
             const toDoItemsDiv = buildToDoItemsDiv(projectIndex, toDoItemDiv);
 
@@ -137,13 +140,25 @@ import {
         return editTitleBtn;
     }
 
-    const createDeleteProjectBtn = (projectIndex) => {
-        const editTitleBtn = document.createElement("div");
-        editTitleBtn.setAttribute("id", projectIndex);
-        editTitleBtn.classList = "deleteProject";
-        editTitleBtn.textContent = "Delete Project";
+    const deleteProject = (projectIndex, projectsArray) => {
+        projects.splice(projectIndex, 1);
+        document.querySelector(`#\\3${projectIndex}.project`).remove();
+    }
 
-        return editTitleBtn;
+    const createDeleteProjectBtn = (projectIndex) => {
+        const deleteProjectBtn = document.createElement("div");
+        deleteProjectBtn.setAttribute("id", projectIndex);
+        deleteProjectBtn.classList = "deleteProject";
+        deleteProjectBtn.textContent = "Delete Project";
+
+        deleteProjectBtn.addEventListener('click', (e) => {
+            const response = confirm("Are you Ok with deleting this entire project?");
+            if (response === true) {
+                deleteProject(projectIndex, projects);
+            }
+        })
+        
+        return deleteProjectBtn;
     }
 
     const createProjectDoor = (projectIndex) => {
@@ -315,16 +330,13 @@ import {
         addProjectBtn.textContent = "Add Project";
 
         addProjectBtn.addEventListener('click', (e) => {
-            //projects.push(projectNameInput.value);
-            addProject();
+            addProject(projects);
         });
 
         return addProjectBtn;
     }
 
     buildProjectNameInput();
-
-    const projects = [];
 
     const toDoFactory = (title, dueDate, priority, description, notes) => {
         return {
