@@ -216,6 +216,33 @@ import {
         return title;
     }
 
+    const createPriorityInputs = (projectIndex, taskIndex) => {
+        const priorityOptions = [[1,"Low"], [2,"Medium"], [3,"High"]];
+
+        const priorityDiv = document.createElement("div");
+        priorityDiv.classList = "priorities";
+        priorityDiv.textContent = "Choose a Priority Level: "
+
+        priorityOptions.forEach((priority) => {
+            const priorityLabel = document.createElement("label");
+            priorityLabel.for = "priority";
+            priorityLabel.textContent = priority[1];
+
+            const priorityInput = document.createElement("input");
+            priorityInput.type = "radio";
+            priorityInput.value = priority[0];
+            priorityInput.setAttribute("id", projectIndex+"-"+taskIndex);
+            priorityInput.name = "priority";
+            priorityInput.classList = "priority";
+
+            priorityDiv.appendChild(priorityInput);
+            priorityDiv.appendChild(priorityLabel);
+
+        })
+
+        return priorityDiv;
+    }
+
     const buildToDoItemsDiv = (projectIndex, toDoItemDiv) => {
         const toDoItemsDiv = createToDoItemsDiv(projectIndex);
         const addTasksBtn = createAddTasksBtn(projectIndex);
@@ -235,23 +262,23 @@ import {
         const toDoItemDiv = createToDoItemDiv(projectIndex, taskIndex);
         
         toDoItemDiv.appendChild(titleInput);
-        toDoItemDiv.appendChild(completeDataDiv);
         toDoItemDiv.appendChild(descriptionInput);
         toDoItemDiv.appendChild(notesInput);
+        toDoItemDiv.appendChild(completeDataDiv);
 
         return toDoItemDiv;
     }
 
     const buildCompleteDataDiv = (projectIndex, taskIndex) => {
         const completeDataDiv = createCompleteDataDiv(projectIndex, taskIndex);
+        const priorityInputs = createPriorityInputs(projectIndex, taskIndex);
         const dueDateInput = createDueDateInput(projectIndex, taskIndex);
-        const taskDoor = createTaskDoor(projectIndex, taskIndex);
         const completeDiv = createCompleteDiv(projectIndex, taskIndex);
         const editDiv = createSubmitTaskDiv(projectIndex, taskIndex);
         const deleteDiv = createDeleteTaskDiv(projectIndex, taskIndex);
 
+        completeDataDiv.appendChild(priorityInputs);
         completeDataDiv.appendChild(dueDateInput);
-        completeDataDiv.appendChild(taskDoor);
         completeDataDiv.appendChild(completeDiv);
         completeDataDiv.appendChild(editDiv);
         completeDataDiv.appendChild(deleteDiv);
