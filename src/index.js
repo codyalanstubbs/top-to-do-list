@@ -140,8 +140,28 @@ import {
         return editTitleBtn;
     }
 
+    const resetProjectIds = (deletedProjectIndex, projectsArray) => {
+        const newProjectsLength = projectsArray.length - 1;
+
+
+        let nextProjIndex = deletedProjectIndex + 1;
+
+        for (nextProjIndex; nextProjIndex <= newProjectsLength; nextProjIndex++) {
+            const nextProject = document.querySelector(`#\\3${nextProjIndex}.project`);
+            nextProject.id = nextProjIndex - 1;
+            resetTaskIds(nextProject, nextProjIndex)
+        }
+    }
+
+    const resetTaskIds = (projectElement, projectIndex) => {
+        projectElement.childNodes.forEach((child) => {
+            let taskIndex = child.id.split()[1];
+            child.id = projectIndex+"-"+taskIndex;
+        })
+    }
+
     const deleteProject = (projectIndex, projectsArray) => {
-        projects.splice(projectIndex, 1);
+        projectsArray.splice(projectIndex, 1);
         document.querySelector(`#\\3${projectIndex}.project`).remove();
     }
 
@@ -154,6 +174,7 @@ import {
         deleteProjectBtn.addEventListener('click', (e) => {
             const response = confirm("Are you Ok with deleting this entire project?");
             if (response === true) {
+                resetProjectIds(projectIndex, projects);
                 deleteProject(projectIndex, projects);
             }
         })
@@ -354,7 +375,5 @@ import {
             items
         };
     };
-
-
 
 })()
