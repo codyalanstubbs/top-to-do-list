@@ -82,7 +82,6 @@ body {
 .submit,
 .deleteProject,
 .editTitle,
-.addTask,
 .deleteTask {
     margin: 5px 0;
     padding: 2px;
@@ -93,7 +92,6 @@ body {
 
 .deleteProject,
 .editTitle,
-.addTask,
 .deleteTask {
     margin-left: 5px;
     margin-right: 5px;
@@ -111,8 +109,21 @@ body {
     background-color: orange;
 }
 
-.submit {
-    color: lightgrey;
+.submit,
+.addTask {
+    color: rgb(67, 67, 67);
+    background-color: rgb(146, 233, 146);
+}
+
+.addTask.toDoItem {
+    justify-content: center;
+    text-align: center;
+}
+
+.submit:hover,
+.addTask:hover {
+    cursor: pointer;
+    color: white;
     background-color: green;
 }
 

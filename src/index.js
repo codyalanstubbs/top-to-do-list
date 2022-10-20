@@ -62,12 +62,10 @@ import {
 
         const projectMetaSubDiv = createProjectMetaSubDiv(projectIndex);
         const projectDoor = createProjectDoor(projectIndex);
-        const addTasksBtn = createAddTasksBtn(projectIndex);
         const editTitleBtn = createEditTitleBtn(projectIndex);
         const deleteProjectBtn = createDeleteProjectBtn(projectIndex);
 
         projectMetaSubDiv.appendChild(numberOfTasks);
-        projectMetaSubDiv.appendChild(addTasksBtn);
         projectMetaSubDiv.appendChild(editTitleBtn);
         projectMetaSubDiv.appendChild(deleteProjectBtn);
         projectMetaSubDiv.appendChild(projectDoor);
@@ -125,7 +123,7 @@ import {
     const createAddTasksBtn = (projectIndex) => {
         const addTasksBtn = document.createElement("div");
         addTasksBtn.setAttribute("id", projectIndex);
-        addTasksBtn.classList = "addTask";
+        addTasksBtn.classList = "addTask toDoItem";
         addTasksBtn.textContent = "Add Task";
 
         return addTasksBtn;
@@ -220,8 +218,10 @@ import {
 
     const buildToDoItemsDiv = (projectIndex, toDoItemDiv) => {
         const toDoItemsDiv = createToDoItemsDiv(projectIndex);
+        const addTasksBtn = createAddTasksBtn(projectIndex);
 
         toDoItemsDiv.appendChild(toDoItemDiv);
+        toDoItemsDiv.appendChild(addTasksBtn);
 
         return toDoItemsDiv;
     }
