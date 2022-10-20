@@ -247,12 +247,14 @@ import {
         const dueDateInput = createDueDateInput(projectIndex, taskIndex);
         const taskDoor = createTaskDoor(projectIndex, taskIndex);
         const completeDiv = createCompleteDiv(projectIndex, taskIndex);
-        const editDiv = createSubmitTaskDiv(projectIndex, taskIndex)
+        const editDiv = createSubmitTaskDiv(projectIndex, taskIndex);
+        const deleteDiv = createDeleteTaskDiv(projectIndex, taskIndex);
 
         completeDataDiv.appendChild(dueDateInput);
         completeDataDiv.appendChild(taskDoor);
         completeDataDiv.appendChild(completeDiv);
         completeDataDiv.appendChild(editDiv);
+        completeDataDiv.appendChild(deleteDiv);
 
         return completeDataDiv;
     }
@@ -305,8 +307,16 @@ import {
         submitTaskDiv.classList = "edit submit";
         submitTaskDiv.textContent = "Sumbit Task";
 
-
         return submitTaskDiv;
+    }
+
+    const createDeleteTaskDiv = (projectIndex, taskIndex) => {
+        const deleteTaskDiv = document.createElement("div");
+        deleteTaskDiv.setAttribute("id", projectIndex+"-"+taskIndex);
+        deleteTaskDiv.classList = "deleteTask";
+        deleteTaskDiv.textContent = "Delete Task";
+
+        return deleteTaskDiv;
     }
 
     const createToDoItemDiv = (projectIndex, taskIndex) => {
