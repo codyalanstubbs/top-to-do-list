@@ -631,7 +631,21 @@ import {
         deleteTaskDiv.classList = "deleteTask";
         deleteTaskDiv.textContent = "❌";
 
+        deleteTaskDiv.addEventListener('click', (e) => {
+            deleteTask(projectIndex, taskIndex)
+        });
+
         return deleteTaskDiv;
+    }
+
+    const deleteTask = (projectIndex, taskIndex) => {
+        
+        if (projects[projectIndex].items[taskIndex]) {
+            projects[projectIndex].items.splice(taskIndex, 1);
+        }
+
+        const toDoItem = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.toDoItem`);
+        toDoItem.remove();
     }
 
     const createToDoItem = (projectIndex, taskIndex, elementType) => {
