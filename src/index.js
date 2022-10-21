@@ -29,6 +29,7 @@ import {
             const projectsDiv = document.querySelector('.projects');
             const projectDiv = buildProjectDiv(projectIndex, numberOfItems, projectNameInput.value);
 
+            
             const toDoItemDiv = buildToDoItemDiv(projectIndex, numberOfItems, "input");
             const toDoItemsDiv = buildToDoItemsDiv(projectIndex, toDoItemDiv);
 
@@ -185,7 +186,7 @@ import {
                 priorityValue = input.value;
             }
         })
-
+        
         projects[projectIndex].items.push(
             toDoFactory(
                 document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.title`).value,
@@ -205,20 +206,31 @@ import {
     const displaySubmittedTask = (projectIndex, taskIndex) => {
         const toDoItemsDiv = document.querySelector(`#\\3${projectIndex}.toDoItems`);
         const toDoItemDiv = buildToDoItemDiv(projectIndex, taskIndex, "div");
-        console.log(toDoItemDiv);
+
         toDoItemsDiv.insertBefore(toDoItemDiv, toDoItemsDiv.lastChild);
     }
-    
 
+    const addNewToDoItem = (projectIndex, addTasksBtn) => {
+
+        const newTaskIndex = projects[projectIndex].items.length;
+
+        const newToDoItem = buildToDoItemDiv(projectIndex, newTaskIndex, "input");
+
+        addTasksBtn.before(newToDoItem)
+    }
+    
     const createAddTasksBtn = (projectIndex) => {
         const addTasksBtn = document.createElement("div");
         addTasksBtn.setAttribute("id", projectIndex);
         addTasksBtn.classList = "addTask toDoItem";
         addTasksBtn.textContent = "Add Task";
 
+        addTasksBtn.addEventListener('click', (e) => {
+            addNewToDoItem(projectIndex, addTasksBtn);
+        })
+
         return addTasksBtn;
     }
-
 
 
     const createEditTitleBtn = (projectIndex) => {
@@ -236,7 +248,7 @@ import {
 
     const editTitleBtnEvents = (projectIndex, editTitleBtn) => {
         const projectMetaDiv = document.querySelector(`#\\3${projectIndex}.projectMeta`);
-        
+
         const currentProjectNameDiv = document.querySelector(`#\\3${projectIndex}.projectName`);
         const currentProjectName = projects[projectIndex].name;
         
@@ -452,16 +464,14 @@ import {
         const completeDataDiv = buildCompleteDataDiv(projectIndex, taskIndex, elementType);
         const description = createDescription(projectIndex, taskIndex, elementType);
         const notes = createNotes(projectIndex, taskIndex, elementType);
-    
+
         const toDoItem = createToDoItem(projectIndex, taskIndex, elementType);
-        console.log(toDoItem);
         
         toDoItem.appendChild(title);
 
         if (elementType === "div") {
 
             const taskDoor = createTaskDoor(projectIndex, taskIndex, "opened");
-            console.log("Task: ", taskDoor);
             completeDataDiv.appendChild(taskDoor);
 
             toDoItem.classList = `toDoItem priority-${projects[projectIndex].items[taskIndex].priority}`;
@@ -596,6 +606,12 @@ import {
         submitTaskDiv.classList = "edit submit";
         submitTaskDiv.textContent = "Sumbit Task";
 
+        addSubmitTaskEvents(projectIndex, taskIndex, submitTaskDiv);
+
+        return submitTaskDiv;
+    }
+
+    const addSubmitTaskEvents = (projectIndex, taskIndex, submitTaskDiv) => {
         submitTaskDiv.addEventListener('click', (e) => {
             if (checkRequiredTaskInputs(projectIndex, taskIndex)) {
                 // Do not submit data because there is a required input empty
@@ -603,10 +619,10 @@ import {
                 pushTaskInputs(projectIndex, taskIndex); 
                 removeTaskUI(projectIndex, taskIndex);
                 displaySubmittedTask(projectIndex, taskIndex);
+
+                addSubmitTaskEvents(projectIndex, taskIndex, submitTaskDiv);
             }
         })
-
-        return submitTaskDiv;
     }
 
     const createDeleteTaskDiv = (projectIndex, taskIndex) => {
