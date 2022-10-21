@@ -89,6 +89,9 @@ body {
     background-color: lightyellow;
 }
 
+.toDoItem.itemComplete {
+    background-color: grey;
+}
 
 .complete,
 .edit,

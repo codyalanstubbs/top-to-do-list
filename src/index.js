@@ -193,7 +193,8 @@ import {
                 document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.dueDate`).value,
                 priorityValue,
                 document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.description`).value,
-                document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.notes`).value
+                document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.notes`).value,
+                false // project is default "not complete" thus false
             )
         ); 
 
@@ -498,17 +499,21 @@ import {
     const buildCompleteDataDiv = (projectIndex, taskIndex, elementType) => {
         const completeDataDiv = createCompleteDataDiv(projectIndex, taskIndex);
         const dueDate = createTaskDueDate(projectIndex, taskIndex, elementType);
-        const completeDiv = createCompleteDiv(projectIndex, taskIndex);
         const submitEditTask = createSubmitEditTask(projectIndex, taskIndex, elementType);
         const deleteDiv = createDeleteTaskDiv(projectIndex, taskIndex);
 
         if (elementType === "input") {
             const priorityDiv = createPriorityDiv(projectIndex, taskIndex, elementType);
-            completeDataDiv.appendChild(priorityDiv);
-        };
 
-        completeDataDiv.appendChild(dueDate);
-        completeDataDiv.appendChild(completeDiv);
+            completeDataDiv.appendChild(priorityDiv);
+            completeDataDiv.appendChild(dueDate);
+        } else if (elementType === "div") {
+            const completeDiv = createCompleteDiv(projectIndex, taskIndex);
+
+            completeDataDiv.appendChild(dueDate);
+            completeDataDiv.appendChild(completeDiv);
+        }
+
         completeDataDiv.appendChild(submitEditTask);
         completeDataDiv.appendChild(deleteDiv);
 
@@ -579,8 +584,20 @@ import {
         completeDiv.textContent = "✔️";
         completeDiv.classList = "not complete";
 
+        completeDiv.addEventListener('click', (e) => {
+            toggleCompletionStatus(projectIndex, taskIndex, completeDiv);
+        })
+
         return completeDiv;
     }
+
+    const toggleCompletionStatus = (projectIndex, taskIndex, completeDiv) => {
+        projects[projectIndex].items[taskIndex].completionStatus = true; 
+        completeDiv.classList.toggle("not");
+        const toDoItemDiv = document.querySelector(`#\\3${projectIndex+'-'+taskIndex}.toDoItem`);
+        toDoItemDiv.classList = "toDoItem itemComplete"
+    }
+
 
     const createSubmitEditTask = (projectIndex, taskIndex, elementType) => {
         if (elementType === "input") {
@@ -715,13 +732,14 @@ import {
 
     buildProjectNameInput();
 
-    const toDoFactory = (title, dueDate, priority, description, notes) => {
+    const toDoFactory = (title, dueDate, priority, description, notes, completionStatus) => {
         return {
             title,
             dueDate,
             priority,
             description,
-            notes
+            notes,
+            completionStatus
         };
     };
 
