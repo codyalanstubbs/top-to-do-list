@@ -37,9 +37,9 @@ body {
 
 .metaSubDiv {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
-    width: 55%;
+    width: 30%;
 }
 
 .project:first-of-type > .projectMeta {
@@ -77,6 +77,19 @@ body {
     border-right: 1.5px solid black;
 }
 
+.toDoItem.priority-3 {
+    background-color: lightcoral;
+}
+
+.toDoItem.priority-2 {
+    background-color: lightsalmon;
+}
+
+.toDoItem.priority-1 {
+    background-color: lightyellow;
+}
+
+
 .complete,
 .edit,
 .submit,
@@ -90,23 +103,37 @@ body {
     text-align: center;
 }
 
-.deleteProject,
-.editTitle,
-.deleteTask {
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
 .complete {
     background-color: green;
 }
 
-.not.complete {
+.not.complete,
+.editTitle,
+.edit,
+.deleteTask,
+.deleteProject {
+    filter: grayscale(100%);
+    color: rgb(67, 67, 67);
     background-color: lightgrey;
 }
 
-.edit {
-    background-color: orange;
+.completeData.notInput > .not.complete:hover {
+    filter:  none;
+    background-color: lightgreen;
+}
+
+.editTitle:hover,
+.edit:hover {
+    filter:  none;
+    background-color: rgb(255, 196, 86);
+}
+
+.deleteTask:hover,
+.deleteProject:hover {
+    filter:  none;
+    cursor: pointer;
+    color: white;
+    background-color: lightcoral;
 }
 
 .submit,
@@ -127,21 +154,12 @@ body {
     background-color: green;
 }
 
-.deleteProject,
-.deleteTask {
-    color: rgb(67, 67, 67);
-    background-color: lightcoral;
-}
-
-.deleteProject:hover,
-.deleteTask:hover {
-    cursor: pointer;
-    color: white;
-    background-color: red;
-}
-
 .toDoItem > * {
     width: 100%;
+}
+
+.toDoItem > .notInput {
+    width: 50%;
 }
 
 .title {
@@ -153,6 +171,10 @@ body {
     justify-content: space-evenly;
     align-items: center;
     flex-wrap: wrap;
+}
+
+.completeData.notInput {
+    font-size: 12px;
 }
 
 .priorities,
@@ -170,6 +192,12 @@ label[for="dueDate"] {
 
 .notes {
     font-style: italic;
+}
+
+.notes.notInput {
+    box-sizing: border-box;
+    text-align: right;
+    border-left: 1px dashed black;
 }
 
 .hidden {
