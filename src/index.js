@@ -121,18 +121,68 @@ import {
         return numberOfTasks;
     } 
 
-    const checkTaskInputs = (projectIndex, taskIndex) => {
+    const checkRequiredTaskInputs = (projectIndex, taskIndex) => {
+        const requiredInputClasses = ['title', 'description', 'priority', 'dueDate'];
+        let anyInputsEmpty = false;
 
+        requiredInputClasses.forEach((inputClass) => {
+            anyInputsEmpty = checkInputEmpty(projectIndex, taskIndex, inputClass, anyInputsEmpty);
+        })
+
+        return anyInputsEmpty;
     } 
+
+    const checkInputEmpty = (projectIndex, taskIndex, inputClass, anyInputsEmpty) => {
+        if (inputClass === "priority") {
+
+            if (checkRadioInputsEmpty(projectIndex, taskIndex)) {
+                
+                const priorityInputs = document.querySelectorAll(`#\\3${projectIndex+"-"+taskIndex}.priority`);
+                
+                priorityInputs.forEach((priority) => {
+                    priority.classList.toggle("incomplete");
+                })
+
+                anyInputsEmpty = true;
+
+            }
+
+        } else {
+
+            const inputElement = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.${inputClass}`);
+
+            if (inputElement.value === '' || inputElement.value === undefined) {
+                inputElement.classList.toggle("incomplete");
+
+                anyInputsEmpty = true;
+            }
+
+        }
+
+        return anyInputsEmpty;
+    }
+
+    const checkRadioInputsEmpty = (projectIndex, taskIndex) => {   
+        const priorityRadioInputs = document.querySelectorAll(".priority");
+
+        let radioStatus = true; // true means all radios empty
+
+        priorityRadioInputs.forEach((input) => {
+            if (input.checked === true) {
+                radioStatus = false;
+            }
+        })     
+
+        return radioStatus;
+    }
 
     const pushTaskInputs = (projectIndex, taskIndex) => {
         const priorityRadioInputs = document.querySelectorAll(".priority");
         let priorityValue;
 
         priorityRadioInputs.forEach((input) => {
-            console.log(input);
             if (input.checked === true) {
-                return priorityValue = input.value;
+                priorityValue = input.value;
             }
         })
 
@@ -490,12 +540,12 @@ import {
     }    
     
     const createEditTaskDiv = (projectIndex, taskIndex) => {
-        const submitTaskDiv = document.createElement("div");
-        submitTaskDiv.setAttribute("id", projectIndex+"-"+taskIndex);
-        submitTaskDiv.classList = "edit";
-        submitTaskDiv.textContent = "✏️";
+        const editTaskDiv = document.createElement("div");
+        editTaskDiv.setAttribute("id", projectIndex+"-"+taskIndex);
+        editTaskDiv.classList = "edit";
+        editTaskDiv.textContent = "✏️";
 
-        return submitTaskDiv;
+        return editTaskDiv;
     }
     
     const createSubmitTaskDiv = (projectIndex, taskIndex) => {
@@ -506,9 +556,13 @@ import {
         submitTaskDiv.textContent = "Sumbit Task";
 
         submitTaskDiv.addEventListener('click', (e) => {
-            pushTaskInputs(projectIndex, taskIndex); 
-            removeTaskUI(projectIndex, taskIndex);
-            displaySubmittedTask(projectIndex, taskIndex);
+            if (checkRequiredTaskInputs(projectIndex, taskIndex)) {
+                // Do not submit data because there is a required input empty
+            } else {
+                pushTaskInputs(projectIndex, taskIndex); 
+                removeTaskUI(projectIndex, taskIndex);
+                displaySubmittedTask(projectIndex, taskIndex);
+            }
         })
 
         return submitTaskDiv;
