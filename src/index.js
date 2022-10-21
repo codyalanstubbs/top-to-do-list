@@ -344,7 +344,7 @@ import {
     const createNotesDiv = (projectIndex, taskIndex) => {
         const notesDiv= document.createElement("div");
         notesDiv.setAttribute("id", projectIndex+"-"+taskIndex);
-        notesDiv.classList = "notes";
+        notesDiv.classList = "notes notInput";
         notesDiv.textContent = projects[projectIndex].items[taskIndex].notes;
 
         return notesDiv;
@@ -370,7 +370,7 @@ import {
     const createDescriptionDiv =  (projectIndex, taskIndex) => {
         const description = document.createElement("div");
         description.setAttribute("id", projectIndex+"-"+taskIndex);
-        description.classList = "description";
+        description.classList = "description notInput";
         description.textContent = projects[projectIndex].items[taskIndex].description;
 
         return description;
@@ -397,7 +397,7 @@ import {
     const createTitleDiv = (projectIndex, taskIndex) => {
         const title = document.createElement("div");
         title.setAttribute("id", projectIndex+"-"+taskIndex);
-        title.classList = "title";
+        title.classList = "title notInput";
         title.textContent = projects[projectIndex].items[taskIndex].title;
 
         return title;
@@ -476,10 +476,7 @@ import {
             completeDataDiv.appendChild(taskDoor);
 
             toDoItem.classList = `toDoItem priority-${projects[projectIndex].items[taskIndex].priority}`;
-            title.classList = "title notInput";
             completeDataDiv.classList = "completeData notInput";
-            description.classList = "description notInput";
-            notes.classList = "notes notInput";
             
             toDoItem.appendChild(completeDataDiv);
             toDoItem.appendChild(description);
@@ -566,6 +563,7 @@ import {
     const createTaskDoor = (projectIndex, taskIndex, doorPosition) => {
         const taskDoor = document.createElement("div");
         taskDoor.setAttribute("id", projectIndex+"-"+taskIndex);
+        taskDoor.classList = `taskDoor ${doorPosition}`;
 
         if (doorPosition === "opened") {
             taskDoor.textContent = "▲";
@@ -573,7 +571,35 @@ import {
             taskDoor.textContent = "▼";
         }
 
-        taskDoor.classList = `taskDoor ${doorPosition}`;
+        taskDoor.addEventListener('click', (e) => {
+            let newTaskDoor;
+
+            if (doorPosition === "opened") {
+
+                newTaskDoor = createTaskDoor(projectIndex, taskIndex, "closed");
+                
+                const description = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.description`); 
+                const notes = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.notes`);
+                
+                description.remove();
+                notes.remove();
+
+            } else if (doorPosition === "closed") {
+
+                newTaskDoor = createTaskDoor(projectIndex, taskIndex, "opened");
+
+                const description = createDescription(projectIndex, taskIndex, "div");
+                const notes = createNotes(projectIndex, taskIndex, "div");
+
+                const toDoItem = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.toDoItem`);
+                toDoItem.appendChild(description);
+                toDoItem.appendChild(notes);
+            }
+
+            taskDoor.before(newTaskDoor);
+            taskDoor.remove();
+            
+        })
 
         return taskDoor;
     } 
@@ -597,7 +623,6 @@ import {
         const toDoItemDiv = document.querySelector(`#\\3${projectIndex+'-'+taskIndex}.toDoItem`);
         toDoItemDiv.classList = "toDoItem itemComplete"
     }
-
 
     const createSubmitEditTask = (projectIndex, taskIndex, elementType) => {
         if (elementType === "input") {
