@@ -1,5 +1,6 @@
 import './style.css';
 import {
+    add,
     format
 } from 'date-fns';
 
@@ -119,6 +120,38 @@ import {
 
         return numberOfTasks;
     } 
+
+    const pushTaskInputs = (projectIndex, taskIndex) => {
+        const priorityRadioInputs = document.querySelectorAll(".priority");
+        let priorityValue;
+
+        priorityRadioInputs.forEach((input) => {
+            console.log(input);
+            if (input.checked === true) {
+                return priorityValue = input.value;
+            }
+        })
+
+        projects[projectIndex].items.push(
+            toDoFactory(
+                document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.title`).value,
+                document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.dueDate`).value,
+                priorityValue,
+                document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.description`).value,
+                document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.notes`).value
+            )
+        ); 
+
+    }
+
+    const removeTaskUI = (projectIndex, taskIndex) => {
+        document.querySelector(`#${projectIndex+"-"+taskIndex}.toDoItem`).remove();
+    }
+
+    const displaySubmittedTask = (projectIndex, taskIndex) => {
+        
+    }
+
 
     const createAddTasksBtn = (projectIndex) => {
         const addTasksBtn = document.createElement("div");
@@ -433,6 +466,10 @@ import {
         submitTaskDiv.setAttribute("id", projectIndex+"-"+taskIndex);
         submitTaskDiv.classList = "edit submit";
         submitTaskDiv.textContent = "Sumbit Task";
+
+        submitTaskDiv.addEventListener('click', (e) => {
+            pushTaskInputs(projectIndex, taskIndex); 
+        })
 
         return submitTaskDiv;
     }
