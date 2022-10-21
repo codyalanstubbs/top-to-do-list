@@ -121,6 +121,10 @@ import {
         return numberOfTasks;
     } 
 
+    const checkTaskInputs = (projectIndex, taskIndex) => {
+
+    } 
+
     const pushTaskInputs = (projectIndex, taskIndex) => {
         const priorityRadioInputs = document.querySelectorAll(".priority");
         let priorityValue;
@@ -273,6 +277,7 @@ import {
         description.setAttribute("id", projectIndex+"-"+taskIndex);
         description.classList = "description";
         description.placeholder = "Enter a description here";
+        description.required = true;
         
         return description;
     }
@@ -299,6 +304,7 @@ import {
         title.setAttribute("id", projectIndex+"-"+taskIndex);
         title.classList = "title";
         title.placeholder = "Enter the task's title here";
+        title.required = true;
 
         return title;
     }
@@ -330,6 +336,7 @@ import {
             priorityInput.setAttribute("id", projectIndex+"-"+taskIndex);
             priorityInput.name = "priority";
             priorityInput.classList = "priority";
+            priorityInput.required = true;
 
             priorityDiv.appendChild(priorityInput);
             priorityDiv.appendChild(priorityLabel);
@@ -355,9 +362,10 @@ import {
         const description = createDescription(projectIndex, taskIndex, elementType);
         const notes = createNotes(projectIndex, taskIndex, elementType);
     
-        const toDoItemDiv = createToDoItemDiv(projectIndex, taskIndex);
+        const toDoItem = createToDoItem(projectIndex, taskIndex, elementType);
+        console.log(toDoItem);
         
-        toDoItemDiv.appendChild(title);
+        toDoItem.appendChild(title);
 
         if (elementType === "div") {
 
@@ -365,25 +373,25 @@ import {
             console.log("Task: ", taskDoor);
             completeDataDiv.appendChild(taskDoor);
 
-            toDoItemDiv.classList = `toDoItem priority-${projects[projectIndex].items[taskIndex].priority}`;
+            toDoItem.classList = `toDoItem priority-${projects[projectIndex].items[taskIndex].priority}`;
             title.classList = "title notInput";
             completeDataDiv.classList = "completeData notInput";
             description.classList = "description notInput";
             notes.classList = "notes notInput";
             
-            toDoItemDiv.appendChild(completeDataDiv);
-            toDoItemDiv.appendChild(description);
-            toDoItemDiv.appendChild(notes);
+            toDoItem.appendChild(completeDataDiv);
+            toDoItem.appendChild(description);
+            toDoItem.appendChild(notes);
 
         } else if (elementType === "input") {
     
-            toDoItemDiv.appendChild(description);
-            toDoItemDiv.appendChild(notes);
-            toDoItemDiv.appendChild(completeDataDiv);
+            toDoItem.appendChild(description);
+            toDoItem.appendChild(notes);
+            toDoItem.appendChild(completeDataDiv);
         }
 
 
-        return toDoItemDiv;
+        return toDoItem;
     }
 
     const buildCompleteDataDiv = (projectIndex, taskIndex, elementType) => {
@@ -397,7 +405,7 @@ import {
             const priorityDiv = createPriorityDiv(projectIndex, taskIndex, elementType);
             completeDataDiv.appendChild(priorityDiv);
         };
-        
+
         completeDataDiv.appendChild(dueDate);
         completeDataDiv.appendChild(completeDiv);
         completeDataDiv.appendChild(submitEditTask);
@@ -433,6 +441,7 @@ import {
 
         dueDateInput.setAttribute("id", projectIndex+"-"+taskIndex);
         dueDateInput.classList = "dueDate";
+        dueDateInput.required = true;
 
         dueDateLabel.appendChild(dueDateInput);
 
@@ -490,7 +499,8 @@ import {
     }
     
     const createSubmitTaskDiv = (projectIndex, taskIndex) => {
-        const submitTaskDiv = document.createElement("div");
+        const submitTaskDiv = document.createElement("button");
+        submitTaskDiv.type = "submit";
         submitTaskDiv.setAttribute("id", projectIndex+"-"+taskIndex);
         submitTaskDiv.classList = "edit submit";
         submitTaskDiv.textContent = "Sumbit Task";
@@ -513,12 +523,29 @@ import {
         return deleteTaskDiv;
     }
 
+    const createToDoItem = (projectIndex, taskIndex, elementType) => {
+        if (elementType === "input") {
+            return createToDoItemForm(projectIndex, taskIndex);
+        } else if (elementType === "div") {
+            return createToDoItemDiv(projectIndex, taskIndex);
+        }
+    }
+
     const createToDoItemDiv = (projectIndex, taskIndex) => {
         const toDoItemDiv = document.createElement("div");
         toDoItemDiv.setAttribute("id", projectIndex+"-"+taskIndex);
         toDoItemDiv.classList = "toDoItem";
 
         return toDoItemDiv;
+    }
+
+    const createToDoItemForm = (projectIndex, taskIndex) => {
+        const toDoItemForm = document.createElement("form");
+        toDoItemForm.method = "post";
+        toDoItemForm.setAttribute("id", projectIndex+"-"+taskIndex);
+        toDoItemForm.classList = "toDoItem";
+
+        return toDoItemForm;
     }
 
     const createToDoItemsDiv = (projectIndex) => {
