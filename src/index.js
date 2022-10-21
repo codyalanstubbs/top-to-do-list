@@ -219,13 +219,54 @@ import {
         return addTasksBtn;
     }
 
+
+
     const createEditTitleBtn = (projectIndex) => {
         const editTitleBtn = document.createElement("div");
         editTitleBtn.setAttribute("id", projectIndex);
         editTitleBtn.classList = "editTitle";
         editTitleBtn.textContent = "✏️";
 
+        editTitleBtn.addEventListener('click', (e) => {
+            editTitleBtnEvents(projectIndex, editTitleBtn);
+        } )
+
         return editTitleBtn;
+    }
+
+    const editTitleBtnEvents = (projectIndex, editTitleBtn) => {
+        const projectMetaDiv = document.querySelector(`#\\3${projectIndex}.projectMeta`);
+        
+        const currentProjectNameDiv = document.querySelector(`#\\3${projectIndex}.projectName`);
+        const currentProjectName = projects[projectIndex].name;
+        
+        const newProjectNameInput = document.createElement('input');
+        newProjectNameInput.classList = "projectName";
+        newProjectNameInput.value = currentProjectName;
+
+        newProjectNameInput.addEventListener('input', (e) => {
+            projects[projectIndex].name = newProjectNameInput.value;
+        })
+
+        newProjectNameInput.addEventListener('focusout', (e) => {
+            projects[projectIndex].name = newProjectNameInput.value;
+
+            const newProjectNameDiv = document.createElement('div');
+            newProjectNameDiv.id = projectIndex;
+            newProjectNameDiv.classList = "projectName";
+            newProjectNameDiv.textContent = projects[projectIndex].name;
+
+            newProjectNameInput.remove();
+            projectMetaDiv.insertBefore(newProjectNameDiv, projectMetaDiv.firstChild);
+
+            editTitleBtn.addEventListener('click', (e) => {
+                editTitleBtnEvents(projectIndex, editTitleBtn);
+            } )
+        })
+
+        currentProjectNameDiv.remove();
+        projectMetaDiv.insertBefore(newProjectNameInput, projectMetaDiv.firstChild);
+        newProjectNameInput.focus();
     }
 
     const resetProjectIds = (deletedProjectIndex, projectsArray) => {
