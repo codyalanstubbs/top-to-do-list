@@ -160,6 +160,7 @@ label[for="dueDate"] {
     font-size: 15px;
     width: 100%;
     text-align: left;
+    padding-left: 15px;
 }
 
 .description,
