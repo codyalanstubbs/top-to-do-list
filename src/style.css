@@ -161,12 +161,10 @@ body {
     width: 100%;
 }
 
-.toDoItem > .notInput {
-    width: 50%;
-}
-
 .title {
     font-weight: bold;
+    display: flex;
+    align-items: center;
 }
 
 .completeData {
@@ -201,6 +199,20 @@ label[for="dueDate"] {
     box-sizing: border-box;
     text-align: right;
     border-left: 1px dashed black;
+}
+
+.title.notInput,
+.description.notInput {
+    width: 50%;
+    padding-left: 2%;
+}
+
+.completeData.notInput,
+.notes.notInput {
+    width: 48%;
+}
+.notes.notInput {
+    padding-right: 2%;
 }
 
 .hidden {
