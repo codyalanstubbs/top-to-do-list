@@ -30,7 +30,7 @@ import {
             const projectDiv = buildProjectDiv(projectIndex, numberOfItems, projectNameInput.value);
 
             
-            const toDoItemDiv = buildToDoItemDiv(projectIndex, numberOfItems, "input");
+            const toDoItemDiv = buildToDoItemDiv(projectIndex, numberOfItems, "input", "new");
             const toDoItemsDiv = buildToDoItemsDiv(projectIndex, toDoItemDiv);
 
             projectDiv.appendChild(toDoItemsDiv)
@@ -123,14 +123,13 @@ import {
     } 
 
     const checkRequiredTaskInputs = (projectIndex, taskIndex) => {
-        console.log("checkRequiredTaskInputs: START");
         const requiredInputClasses = ['title', 'description', 'priority', 'dueDate'];
         let anyInputsEmpty = false;
 
         requiredInputClasses.forEach((inputClass) => {
             anyInputsEmpty = checkInputEmpty(projectIndex, taskIndex, inputClass, anyInputsEmpty);
         })
-        console.log(anyInputsEmpty);
+
         return anyInputsEmpty;
     } 
 
@@ -152,7 +151,7 @@ import {
         } else {
 
             const inputElement = document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.${inputClass}`);
-            console.log(inputElement);
+
             if (inputElement.value === '' || inputElement.value === undefined) {
                 inputElement.classList.toggle("incomplete");
 
@@ -174,11 +173,11 @@ import {
                 radioStatus = false;
             }
         })     
-        console.log("Radio Status: ", radioStatus);
+
         return radioStatus;
     }
 
-    const pushTaskInputs = (projectIndex, taskIndex) => {
+    const pushTaskInputs = (projectIndex, taskIndex, newOrEdit) => {
         const priorityRadioInputs = document.querySelectorAll(`#\\3${projectIndex+"-"+taskIndex}.priority`);
         let priorityValue;
 
@@ -188,17 +187,38 @@ import {
             }
         })
 
-        const numberOfProjectTasks = projects[projectIndex].items.push(
-            toDoFactory(
-                document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.title`).value,
-                document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.dueDate`).value,
-                priorityValue,
-                document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.description`).value,
-                document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.notes`).value,
-                false // project is default "not complete" thus false
-            )
-        );
+        let numberOfProjectTasks;
 
+        if (newOrEdit === "new") {
+
+            numberOfProjectTasks = projects[projectIndex].items.push(
+                toDoFactory(
+                    document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.title`).value,
+                    document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.dueDate`).value,
+                    priorityValue,
+                    document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.description`).value,
+                    document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.notes`).value,
+                    false // project is default "not complete" thus false
+                )
+            );
+
+        } else if (newOrEdit === "edit") {
+
+            projects[projectIndex].items.splice(taskIndex, 1,
+                toDoFactory(
+                    document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.title`).value,
+                    document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.dueDate`).value,
+                    priorityValue,
+                    document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.description`).value,
+                    document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.notes`).value,
+                    false // project is default "not complete" thus false
+                )
+            );
+
+            numberOfProjectTasks = taskIndex;
+
+        }
+        
         return numberOfProjectTasks;
 
     }
@@ -209,7 +229,7 @@ import {
 
     const displaySubmittedTask = (projectIndex, taskIndex) => {
         const toDoItemsDiv = document.querySelector(`#\\3${projectIndex}.toDoItems`);
-        const toDoItemDiv = buildToDoItemDiv(projectIndex, taskIndex, "div");
+        const toDoItemDiv = buildToDoItemDiv(projectIndex, taskIndex, "div", "new");
 
         toDoItemsDiv.insertBefore(toDoItemDiv, toDoItemsDiv.lastChild);
     }
@@ -217,7 +237,7 @@ import {
     const addNewToDoItem = (projectIndex, addTasksBtn) => {
 
         const newTaskIndex = document.querySelectorAll(`#\\3${projectIndex}.toDoItems > div.toDoItem.form`).length;
-        const newToDoItem = buildToDoItemDiv(projectIndex, newTaskIndex, "input");
+        const newToDoItem = buildToDoItemDiv(projectIndex, newTaskIndex, "input", "new");
 
         addTasksBtn.before(newToDoItem)
     }
@@ -487,9 +507,9 @@ import {
         return toDoItemsDiv;
     }
 
-    const buildToDoItemDiv = (projectIndex, taskIndex, elementType) => {
+    const buildToDoItemDiv = (projectIndex, taskIndex, elementType, newOrEdit) => {
         const title = createTitle(projectIndex, taskIndex, elementType);
-        const completeDataDiv = buildCompleteDataDiv(projectIndex, taskIndex, elementType);
+        const completeDataDiv = buildCompleteDataDiv(projectIndex, taskIndex, elementType, newOrEdit);
         const description = createDescription(projectIndex, taskIndex, elementType);
         const notes = createNotes(projectIndex, taskIndex, elementType);
 
@@ -520,10 +540,10 @@ import {
         return toDoItem;
     }
 
-    const buildCompleteDataDiv = (projectIndex, taskIndex, elementType) => {
+    const buildCompleteDataDiv = (projectIndex, taskIndex, elementType, newOrEdit) => {
         const completeDataDiv = createCompleteDataDiv(projectIndex, taskIndex);
         const dueDate = createTaskDueDate(projectIndex, taskIndex, elementType);
-        const submitEditTask = createSubmitEditTask(projectIndex, taskIndex, elementType);
+        const submitEditTask = createSubmitEditTask(projectIndex, taskIndex, elementType, newOrEdit);
         const deleteDiv = createDeleteTaskDiv(projectIndex, taskIndex, elementType);
 
         if (elementType === "input") {
@@ -599,26 +619,29 @@ import {
         }
 
         taskDoor.addEventListener('click', (e) => {
+            const updateProjectIndex = taskDoor.id.split("-")[0];
+            const updateTaskIndex = taskDoor.id.split("-")[1];
+
             let newTaskDoor;
 
             if (doorPosition === "opened") {
 
-                newTaskDoor = createTaskDoor(projectIndex, taskIndex, "closed");
+                newTaskDoor = createTaskDoor(updateProjectIndex, updateTaskIndex, "closed");
                 
-                const description = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.description`); 
-                const notes = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.notes`);
-                
+                const description = document.querySelector(`#\\3${updateProjectIndex+"-"+updateTaskIndex}.description`); 
+                const notes = document.querySelector(`#\\3${updateProjectIndex+"-"+updateTaskIndex}.notes`);
+
                 description.remove();
                 notes.remove();
 
             } else if (doorPosition === "closed") {
 
-                newTaskDoor = createTaskDoor(projectIndex, taskIndex, "opened");
+                newTaskDoor = createTaskDoor(updateProjectIndex, updateTaskIndex, "opened");
 
-                const description = createDescription(projectIndex, taskIndex, "div");
-                const notes = createNotes(projectIndex, taskIndex, "div");
+                const description = createDescription(updateProjectIndex, updateTaskIndex, "div");
+                const notes = createNotes(updateProjectIndex, updateTaskIndex, "div");
 
-                const toDoItem = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.toDoItem.display`);
+                const toDoItem = document.querySelector(`#\\3${updateProjectIndex+"-"+updateTaskIndex}.toDoItem.display`);
                 toDoItem.appendChild(description);
                 toDoItem.appendChild(notes);
             }
@@ -638,7 +661,10 @@ import {
         completeDiv.classList = "not complete";
 
         completeDiv.addEventListener('click', (e) => {
-            toggleCompletionStatus(projectIndex, taskIndex, completeDiv);
+            const updateProjectIndex = completeDiv.id.split("-")[0];
+            const updateTaskIndex = completeDiv.id.split("-")[1];
+
+            toggleCompletionStatus(updateProjectIndex, updateTaskIndex, completeDiv);
         })
 
         return completeDiv;
@@ -659,9 +685,9 @@ import {
 
     }
 
-    const createSubmitEditTask = (projectIndex, taskIndex, elementType) => {
+    const createSubmitEditTask = (projectIndex, taskIndex, elementType, newOrEdit) => {
         if (elementType === "input") {
-            return createSubmitTaskDiv(projectIndex, taskIndex);
+            return createSubmitTaskDiv(projectIndex, taskIndex, newOrEdit);
         } else if (elementType === "div") {
             return createEditTaskDiv(projectIndex, taskIndex);
         }
@@ -673,28 +699,63 @@ import {
         editTaskDiv.classList = "edit";
         editTaskDiv.textContent = "✏️";
 
+        editTaskDiv.addEventListener('click', (e) => {
+            const updateProjectIndex = editTaskDiv.id.split("-")[0];
+            const updateTaskIndex = editTaskDiv.id.split("-")[1];
+
+            addEditTaskEvents(updateProjectIndex, updateTaskIndex, editTaskDiv);
+        });
         return editTaskDiv;
     }
+
+    const addEditTaskEvents = (projectIndex, taskIndex, editTaskDiv) => {
+        const toDoItemDiv = document.querySelector(`#\\3${projectIndex+'-'+taskIndex}.toDoItem.display`);
+        const toDoItemsDiv = toDoItemDiv.parentNode;
+        const toDoItemInput = buildToDoItemDiv(projectIndex, taskIndex, "input", "edit");
+
+        toDoItemsDiv.insertBefore(toDoItemInput, toDoItemDiv);
+        toDoItemDiv.remove();
+
+        addValuesToTaskInputs(projectIndex, taskIndex);
+    }
+
+    const addValuesToTaskInputs = (projectIndex, taskIndex) => {
+        document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.title`).value = projects[projectIndex].items[taskIndex].title;
+        document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.dueDate`).value = projects[projectIndex].items[taskIndex].dueDate;
+        document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.priority[value="${projects[projectIndex].items[taskIndex].priority}"]`).checked = true; 
+        document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.description`).value = projects[projectIndex].items[taskIndex].description;
+        document.querySelector(`input#\\3${projectIndex+"-"+taskIndex}.notes`).value = projects[projectIndex].items[taskIndex].notes;
+    }
     
-    const createSubmitTaskDiv = (projectIndex, taskIndex) => {
+    const createSubmitTaskDiv = (projectIndex, taskIndex, newOrEdit) => {
         const submitTaskDiv = document.createElement("button");
         submitTaskDiv.setAttribute("id", projectIndex+"-"+taskIndex);
-        submitTaskDiv.classList = "edit submit";
-        submitTaskDiv.textContent = "Sumbit Task";
+        if (newOrEdit === "new") {
+            submitTaskDiv.classList = "edit submit";
+            submitTaskDiv.textContent = "Sumbit Task";
+        } else if (newOrEdit === "old") {
+            
+            submitTaskDiv.classList = "editTask";
+            submitTaskDiv.textContent = "Edit Task";
+        }
 
-        addSubmitTaskEvents(projectIndex, taskIndex, submitTaskDiv);
+        addSubmitTaskEvents(projectIndex, taskIndex, submitTaskDiv, newOrEdit);
 
         return submitTaskDiv;
     }
 
-    const addSubmitTaskEvents = (projectIndex, taskIndex, submitTaskDiv) => {
+    const addSubmitTaskEvents = (projectIndex, taskIndex, submitTaskDiv, newOrEdit) => {
         submitTaskDiv.addEventListener('click', (e) => {
             if (checkRequiredTaskInputs(projectIndex, taskIndex)) {
                 // Do not submit data because there is a required input empty
             } else {
-                const numberOfProjectTasks = pushTaskInputs(projectIndex, taskIndex); 
+                const numberOfProjectTasks = pushTaskInputs(projectIndex, taskIndex, newOrEdit); 
                 removeTaskUI(projectIndex, taskIndex); 
-                displaySubmittedTask(projectIndex, numberOfProjectTasks - 1); 
+                if (newOrEdit === "new" ) {
+                    displaySubmittedTask(projectIndex, numberOfProjectTasks - 1);
+                } else if (newOrEdit === "edit") {
+                    displaySubmittedTask(projectIndex, taskIndex);
+                }
             }
         })
     }
@@ -813,5 +874,4 @@ import {
             items
         };
     };
-
 })()
