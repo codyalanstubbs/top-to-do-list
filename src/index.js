@@ -281,11 +281,13 @@ import {
 
         newProjectNameInput.addEventListener('input', (e) => {
             projects[projectIndex].name = newProjectNameInput.value;
+            localStorage.setItem("projects", JSON.stringify(projects));
         })
 
         newProjectNameInput.addEventListener('focusout', (e) => {
             projects[projectIndex].name = newProjectNameInput.value;
-
+            localStorage.setItem("projects", JSON.stringify(projects));
+            
             const newProjectNameDiv = document.createElement('div');
             newProjectNameDiv.id = projectIndex;
             newProjectNameDiv.classList = "projectName";
@@ -297,6 +299,8 @@ import {
             editTitleBtn.addEventListener('click', (e) => {
                 editTitleBtnEvents(projectIndex, editTitleBtn);
             } )
+            
+            localStorage.setItem("projects", JSON.stringify(projects));
         })
 
         currentProjectNameDiv.remove();
@@ -365,6 +369,7 @@ import {
             if (response === true) {
                 resetProjectIds(projectIndex, projects);
                 deleteProject(projectIndex, projects);
+                localStorage.setItem("projects", JSON.stringify(projects));
             }
         })
         
@@ -565,7 +570,12 @@ import {
             const taskDoor = createTaskDoor(projectIndex, taskIndex, "opened");
             completeDataDiv.appendChild(taskDoor);
 
-            toDoItem.classList = `toDoItem display priority-${projects[projectIndex].items[taskIndex].priority}`;
+            if (projects[projectIndex].items[taskIndex].completionStatus === true) {
+                toDoItem.classList = `toDoItem display itemComplete`;
+            } else if (projects[projectIndex].items[taskIndex].completionStatus === false) {
+                toDoItem.classList = `toDoItem display priority-${projects[projectIndex].items[taskIndex].priority}`;
+            }
+
             completeDataDiv.classList = "completeData notInput";
             
             toDoItem.appendChild(completeDataDiv);
@@ -701,7 +711,12 @@ import {
         const completeDiv = document.createElement("div");
         completeDiv.setAttribute("id", projectIndex+"-"+taskIndex);
         completeDiv.textContent = "✔️";
-        completeDiv.classList = "not complete";
+
+        if (projects[projectIndex].items[taskIndex].completionStatus === true) {
+            completeDiv.classList = "complete";
+        } else if (projects[projectIndex].items[taskIndex].completionStatus === false) {
+            completeDiv.classList = "not complete";
+        }
 
         completeDiv.addEventListener('click', (e) => {
             const updateProjectIndex = completeDiv.id.split("-")[0];
@@ -725,7 +740,8 @@ import {
             projects[projectIndex].items[taskIndex].completionStatus = false; 
             toDoItemDiv.classList = "toDoItem display priority-" + projects[projectIndex].items[taskIndex].priority;
         } 
-
+        console.log(projects[projectIndex].items[taskIndex].completionStatus);
+        localStorage.setItem("projects", JSON.stringify(projects));
     }
 
     const createSubmitEditTask = (projectIndex, taskIndex, elementType, newOrEdit) => {
@@ -747,7 +763,10 @@ import {
             const updateTaskIndex = editTaskDiv.id.split("-")[1];
 
             addEditTaskEvents(updateProjectIndex, updateTaskIndex, editTaskDiv);
+            
+            localStorage.setItem("projects", JSON.stringify(projects));
         });
+
         return editTaskDiv;
     }
 
@@ -773,13 +792,12 @@ import {
     const createSubmitTaskDiv = (projectIndex, taskIndex, newOrEdit) => {
         const submitTaskDiv = document.createElement("button");
         submitTaskDiv.setAttribute("id", projectIndex+"-"+taskIndex);
+        submitTaskDiv.classList = "edit submit";
+
         if (newOrEdit === "new") {
-            submitTaskDiv.classList = "edit submit";
             submitTaskDiv.textContent = "Sumbit Task";
-        } else if (newOrEdit === "old") {
-            
-            submitTaskDiv.classList = "editTask";
-            submitTaskDiv.textContent = "Edit Task";
+        } else if (newOrEdit === "edit") {
+            submitTaskDiv.textContent = "Submit Edits";
         }
 
         addSubmitTaskEvents(projectIndex, taskIndex, submitTaskDiv, newOrEdit);
@@ -819,6 +837,7 @@ import {
             const updateProjectIndex = deleteTaskDiv.id.split('-')[0];
             const updateTaskIndex = deleteTaskDiv.id.split('-')[1];
             deleteTask(updateProjectIndex, updateTaskIndex, elementType);
+            localStorage.setItem("projects", JSON.stringify(projects));
             resetEachTasksTaskId(updateProjectIndex, updateTaskIndex, elementType);
             resetNumberOfTasksDiv(updateProjectIndex);
         });
@@ -849,9 +868,8 @@ import {
         if (projects[projectIndex].items[taskIndex]) {
             projects[projectIndex].items.splice(taskIndex, 1);
         }
-        console.log(toDoItem);
+
         toDoItem.remove();
-        console.log(toDoItem);
     }
 
     const createToDoItem = (projectIndex, taskIndex, elementType) => {
