@@ -15,8 +15,16 @@ import {
     const addProject = (projects) => {
         const projectNameInput = document.querySelector('.newProjectName');
         if (projectNameInput.value == '' || projectNameInput.value == undefined) {
-            // Do nothing
+            // Display an error message 
+            const errorMessage = document.createElement("div");
+            errorMessage.classList = "errorMessage";
+            errorMessage.textContent = "Please fill in a name for the project above.";
+
+            document.body.insertBefore(errorMessage, document.body.lastElementChild);
+
         } else {
+            const errorMessage = document.querySelector(".errorMessage")
+            if (errorMessage) errorMessage.remove();
             const newProject = projectFactory(projectNameInput.value, []);
             
             projects.push(newProject);
@@ -36,6 +44,8 @@ import {
             projectDiv.appendChild(toDoItemsDiv)
 
             projectsDiv.insertBefore(projectDiv, projectsDiv.lastChild);
+
+            projectNameInput.value = '';
         }
     }
     
@@ -146,7 +156,7 @@ import {
                     priority.classList.toggle("incomplete");
                 })
                 anyInputsEmpty = true;
-                
+
                 const priorities = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.toDoItem.form > .completeData > .priorities`);
                 priorities.classList.toggle("incomplete");
 
