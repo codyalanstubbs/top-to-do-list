@@ -794,11 +794,14 @@ import {
             } else {
                 const numberOfProjectTasks = pushTaskInputs(projectIndex, taskIndex, newOrEdit); 
                 removeTaskUI(projectIndex, taskIndex); 
+
                 if (newOrEdit === "new" ) {
                     displaySubmittedTask(projectIndex, numberOfProjectTasks - 1);
                 } else if (newOrEdit === "edit") {
                     displaySubmittedTask(projectIndex, taskIndex);
                 }
+                
+                resetNumberOfTasksDiv(projectIndex);
             }
         })
     }
@@ -810,11 +813,24 @@ import {
         deleteTaskDiv.textContent = "❌";
 
         deleteTaskDiv.addEventListener('click', (e) => {
-            deleteTask(projectIndex, taskIndex, elementType);
-            resetEachTasksTaskId(projectIndex, taskIndex, elementType);
+            const updateProjectIndex = deleteTaskDiv.id.split('-')[0];
+            const updateTaskIndex = deleteTaskDiv.id.split('-')[1];
+            deleteTask(updateProjectIndex, updateTaskIndex, elementType);
+            resetEachTasksTaskId(updateProjectIndex, updateTaskIndex, elementType);
+            resetNumberOfTasksDiv(updateProjectIndex);
         });
 
         return deleteTaskDiv;
+    }
+
+    const resetNumberOfTasksDiv = (projectIndex) => {
+        const numberOfTasksDiv = document.querySelector(`#\\3${projectIndex}.numberOfTasks`);
+        const numberOfTasks = projects[projectIndex].items.length;
+        if (numberOfTasks === 1) {
+            numberOfTasksDiv.textContent = numberOfTasks + " task";
+        } else {
+            numberOfTasksDiv.textContent = numberOfTasks + " task";
+        }
     }
 
     const deleteTask = (projectIndex, taskIndex, elementType) => {
@@ -830,8 +846,9 @@ import {
         if (projects[projectIndex].items[taskIndex]) {
             projects[projectIndex].items.splice(taskIndex, 1);
         }
-
+        console.log(toDoItem);
         toDoItem.remove();
+        console.log(toDoItem);
     }
 
     const createToDoItem = (projectIndex, taskIndex, elementType) => {
