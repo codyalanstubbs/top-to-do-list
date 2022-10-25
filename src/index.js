@@ -12,15 +12,15 @@ import {
         document.body.appendChild(projectsDiv);
     }
 
-    let projects = [];
-    createProjectsDiv();
     const addProject = (projects) => {
         const projectNameInput = document.querySelector('.newProjectName');
         if (projectNameInput.value == '' || projectNameInput.value == undefined) {
             // Do nothing
         } else {
             const newProject = projectFactory(projectNameInput.value, []);
+            
             projects.push(newProject);
+            localStorage.setItem("projects", JSON.stringify(projects));
 
             const projectIndex = projects.length - 1;
             
@@ -35,7 +35,7 @@ import {
 
             projectDiv.appendChild(toDoItemsDiv)
 
-            projectsDiv.insertBefore(projectDiv, projectsDiv.firstChild);
+            projectsDiv.insertBefore(projectDiv, projectsDiv.lastChild);
         }
     }
     
@@ -793,6 +793,9 @@ import {
                 // Do not submit data because there is a required input empty
             } else {
                 const numberOfProjectTasks = pushTaskInputs(projectIndex, taskIndex, newOrEdit); 
+
+                localStorage.setItem("projects", JSON.stringify(projects));
+
                 removeTaskUI(projectIndex, taskIndex); 
 
                 if (newOrEdit === "new" ) {
@@ -915,8 +918,6 @@ import {
         return addProjectBtn;
     }
 
-    buildProjectNameInput();
-
     const toDoFactory = (title, dueDate, priority, description, notes, completionStatus) => {
         return {
             title,
@@ -934,4 +935,33 @@ import {
             items
         };
     };
+
+    createProjectsDiv();
+    buildProjectNameInput();
+
+    let projects = [];
+    if (localStorage.getItem("projects")) {
+        projects = JSON.parse(localStorage.projects);
+
+        console.log(projects);
+
+        const projectsDiv = document.querySelector(".projects");
+
+        projects.forEach((project, projectIndex) => {
+            
+            const projectDiv = buildProjectDiv(projectIndex, project.items.length, project.name);
+            const toDoItemsDiv = createToDoItemsDiv(projectIndex);
+
+            project.items.forEach((task, taskIndex) => {
+                const toDoItem = buildToDoItemDiv(projectIndex, taskIndex, "div", "new");
+                toDoItemsDiv.appendChild(toDoItem);
+            })
+
+            projectDiv.appendChild(toDoItemsDiv);
+            projectsDiv.insertBefore(projectDiv, projectsDiv.lastChild);
+        })
+
+    } else {
+        
+    }
 })()
