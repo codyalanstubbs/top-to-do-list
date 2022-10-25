@@ -63,7 +63,7 @@ import {
         const numberOfTasks = createNumberOfTasks(projectIndex, numberTasks);
 
         const projectMetaSubDiv = createProjectMetaSubDiv(projectIndex);
-        const projectDoor = createProjectDoor(projectIndex);
+        const projectDoor = createProjectDoor(projectIndex, "opened");
         const editTitleBtn = createEditTitleBtn(projectIndex);
         const deleteProjectBtn = createDeleteProjectBtn(projectIndex);
 
@@ -371,13 +371,56 @@ import {
         return deleteProjectBtn;
     }
 
-    const createProjectDoor = (projectIndex) => {
+    const createProjectDoor = (projectIndex, doorPosition) => {
         const projectDoor = document.createElement("div");
         projectDoor.setAttribute("id", projectIndex);
-        projectDoor.classList = "projectDoor opened";
-        projectDoor.textContent = "▲";
+        projectDoor.classList = `projectDoor ${doorPosition}`;
+        
+        if (doorPosition === "opened") {
+            projectDoor.textContent = "▲";
+        } else if (doorPosition === "closed") {
+            projectDoor.textContent = "▼";
+        }
+
+        projectDoor.addEventListener('click', (e) => {
+            const updateProjectIndex = projectDoor.id;
+            let newProjectDoor;
+
+            if (doorPosition === "opened") {
+                newProjectDoor = createProjectDoor(updateProjectIndex, "closed");
+                const toDoItemsDiv = document.querySelector(`#\\3${updateProjectIndex}.toDoItems`); 
+                toDoItemsDiv.remove();
+            } else if (doorPosition === "closed") {
+
+                newProjectDoor = createProjectDoor(updateProjectIndex, "opened");
+                const toDoItemsDiv = createToDoItemsDiv(updateProjectIndex);
+                const numberOfTasks = projects[updateProjectIndex].items.length;
+                const addTaskBtn = createAddTasksBtn(updateProjectIndex);
+                const projectDiv = document.querySelector(`#\\3${updateProjectIndex}.project`);
+
+                for (let i = 0; i < numberOfTasks; i++) {
+                    const toDoItemDiv = buildToDoItemDiv(updateProjectIndex, i, "div", "edit");
+                    toDoItemsDiv.appendChild(toDoItemDiv);
+                }
+
+                toDoItemsDiv.appendChild(addTaskBtn);
+                projectDiv.appendChild(toDoItemsDiv);
+            }
+
+            projectDoor.before(newProjectDoor);
+            projectDoor.remove();
+            
+        })
 
         return projectDoor;
+    } 
+
+    const addProjectDoorEvents = (projectIndex, projectDoor) => {
+        projectDoor.addEventListener('click')
+    }
+
+    const closeProjectDoo = (projectIndex, projectDoor) => {
+
     } 
 
     const createNotes = (projectIndex, taskIndex, elementType) => {
