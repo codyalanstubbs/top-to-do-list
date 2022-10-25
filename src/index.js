@@ -740,7 +740,7 @@ import {
             projects[projectIndex].items[taskIndex].completionStatus = false; 
             toDoItemDiv.classList = "toDoItem display priority-" + projects[projectIndex].items[taskIndex].priority;
         } 
-        console.log(projects[projectIndex].items[taskIndex].completionStatus);
+
         localStorage.setItem("projects", JSON.stringify(projects));
     }
 
