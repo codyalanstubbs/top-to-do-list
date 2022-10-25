@@ -63,7 +63,7 @@ import {
         const numberOfTasks = createNumberOfTasks(projectIndex, numberTasks);
 
         const projectMetaSubDiv = createProjectMetaSubDiv(projectIndex);
-        const projectDoor = createProjectDoor(projectIndex, "opened");
+        const projectDoor = createProjectDoor(projectIndex, "closed");
         const editTitleBtn = createEditTitleBtn(projectIndex);
         const deleteProjectBtn = createDeleteProjectBtn(projectIndex);
 
@@ -113,7 +113,9 @@ import {
         numberOfTasks.setAttribute("id", projectIndex);
         numberOfTasks.classList = "numberOfTasks";
         
-        if (numberTasks === 0 || numberTasks === 1) {
+        if (numberTasks === 0) {
+            numberOfTasks.textContent = "No tasks";
+        } else if (numberTasks === 1) {
             numberOfTasks.textContent = "1 task";
         } else {
             numberOfTasks.textContent = numberTasks + " tasks";
@@ -420,14 +422,6 @@ import {
         return projectDoor;
     } 
 
-    const addProjectDoorEvents = (projectIndex, projectDoor) => {
-        projectDoor.addEventListener('click')
-    }
-
-    const closeProjectDoo = (projectIndex, projectDoor) => {
-
-    } 
-
     const createNotes = (projectIndex, taskIndex, elementType) => {
         if (elementType === "input") {
             return createNotesInput(projectIndex, taskIndex);
@@ -567,7 +561,7 @@ import {
 
         if (elementType === "div") {
 
-            const taskDoor = createTaskDoor(projectIndex, taskIndex, "opened");
+            const taskDoor = createTaskDoor(projectIndex, taskIndex, "closed");
             completeDataDiv.appendChild(taskDoor);
 
             if (projects[projectIndex].items[taskIndex].completionStatus === true) {
@@ -579,8 +573,6 @@ import {
             completeDataDiv.classList = "completeData notInput";
             
             toDoItem.appendChild(completeDataDiv);
-            toDoItem.appendChild(description);
-            toDoItem.appendChild(notes);
 
         } else if (elementType === "input") {
     
@@ -966,16 +958,7 @@ import {
         const projectsDiv = document.querySelector(".projects");
 
         projects.forEach((project, projectIndex) => {
-            
             const projectDiv = buildProjectDiv(projectIndex, project.items.length, project.name);
-            const toDoItemsDiv = createToDoItemsDiv(projectIndex);
-
-            project.items.forEach((task, taskIndex) => {
-                const toDoItem = buildToDoItemDiv(projectIndex, taskIndex, "div", "new");
-                toDoItemsDiv.appendChild(toDoItem);
-            })
-
-            projectDiv.appendChild(toDoItemsDiv);
             projectsDiv.insertBefore(projectDiv, projectsDiv.lastChild);
         })
 
