@@ -253,3 +253,13 @@ input.projectName:focus {
     margin-left: 2px;
     background-color: darkgrey;
 }
+
+.incomplete {
+    background-color: rgb(227, 174, 174);
+}
+
+.errorMessage {
+    text-align: center;
+    color: darkred;
+    font-weight: 500;
+}

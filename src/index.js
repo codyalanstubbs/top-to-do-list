@@ -145,8 +145,17 @@ import {
                 priorityInputs.forEach((priority) => {
                     priority.classList.toggle("incomplete");
                 })
-
                 anyInputsEmpty = true;
+                
+                const priorities = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.toDoItem.form > .completeData > .priorities`);
+                priorities.classList.toggle("incomplete");
+
+                const errorMessage = document.createElement('div');
+                errorMessage.classList = "errorMessage";
+                errorMessage.textContent = "Please fill out the fields in red to submit this task.";
+
+                const toDoItemDiv = document.querySelector(`#\\3${projectIndex+"-"+taskIndex}.toDoItem.form`);
+                toDoItemDiv.appendChild(errorMessage)
 
             }
 
@@ -962,7 +971,6 @@ import {
             projectsDiv.insertBefore(projectDiv, projectsDiv.lastChild);
         })
 
-    } else {
-        
     }
+
 })()
